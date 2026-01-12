@@ -205,7 +205,7 @@ open class Session: URLSession {
             do {
               try fileManager.createDirectory(atPath: outputDirectory, withIntermediateDirectories: true, attributes: nil)
             } catch {
-              print("[DVR] Failed to create cassettes directory.")
+              print(DVRError.cannotCreateDirectory)
             }
         }
 
@@ -220,20 +220,20 @@ open class Session: URLSession {
 
             // Add trailing new line
             guard var string = NSString(data: data, encoding: String.Encoding.utf8.rawValue) else {
-                print("[DVR] Failed to persist cassette.")
+                print(DVRError.cannotSaveCassette)
                 return
             }
             string = string.appending("\n") as NSString
 
             if let data = string.data(using: String.Encoding.utf8.rawValue) {
                 try? data.write(to: URL(fileURLWithPath: outputPath), options: [.atomic])
-                print("[DVR] Persisted cassette at \(outputPath). Please add this file to your test target")
+                print(DVRError.cassetteSaved(at: outputPath))
                 return
             }
 
-            print("[DVR] Failed to persist cassette.")
+            print(DVRError.cannotCreateDirectory)
         } catch {
-            print("[DVR] Failed to persist cassette.")
+            print(DVRError.cannotCreateDirectory)
         }
     }
 
